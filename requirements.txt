@@ -3,3 +3,4 @@ uvicorn==0.30.6         # ASGI server to run FastAPI
 websockets==12.0        # WebSocket support for real-time audio streaming (version from logs)
 openai==1.51.0          # OpenAI API client for Realtime API access (latest as of Dec 2024)
 python-dotenv==1.0.1    # Load environment variables from .env file
+twilio==9.3.3           # Twilio SDK for voice and streaming (latest as of Dec 2024)

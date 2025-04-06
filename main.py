@@ -20,7 +20,8 @@ load_dotenv()
 
 # Set up constants
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
-PORT = int(os.getenv('PORT', 5050))
+NGROK_URL = os.getenv('NGROK_URL')
+PORT = int(os.getenv('PORT', 8080))
 SYSTEM_MESSAGE = "Yoo im here to interview you Ethan, you ready???"
 VOICE = 'alloy'
 
@@ -45,7 +46,7 @@ async def handle_incoming_call(request: Request):
     response.say("ok gogogogo start talking")
     host = request.url.hostname
     connect = Connect()
-    connect.stream(url=f"wss://{host}/media-stream")
+    connect.stream(url=f"{NGROK_URL}/media-stream")
     response.append(connect)
     return HTMLResponse(content=str(response), media_type="application/xml")
 
