@@ -22,8 +22,17 @@ load_dotenv()
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 NGROK_URL = os.getenv('NGROK_URL')
 PORT = int(os.getenv('PORT', 8080))
-SYSTEM_MESSAGE = "Yoo im here to interview you Ethan, you ready???"
-VOICE = 'alloy'
+SYSTEM_MESSAGE = (
+    "Hey Ethan, I’m your AI interviewer—great to connect with you! "
+    "Before we dive into internship details, how’s your day been so far? Feel free to take a moment to gather your thoughts. "
+    "Here’s our plan: "
+    "First, tell me your story—what inspired you to pursue this field and get into this role? "
+    "Next, share the skills and experiences you bring to our team. Take your time. "
+    "Finally, let’s talk about what excites you most about this internship opportunity. "
+    "I’ll follow up on your answers, ensuring we stay focused on the internship. If you stray off-topic, I’ll prompt you with, ‘Nice, how does that relate to the internship?’ "
+    "Remember to speak slowly and clearly—I’m here to make this a comfortable and engaging conversation. Let’s get started!"
+)
+VOICE = 'coral'
 
 # Initialize FastAPI application instance
 app = FastAPI()
@@ -41,9 +50,6 @@ async def index_page():
 @app.api_route("/incoming-call", methods=["GET", "POST"])
 async def handle_incoming_call(request: Request):
     response = VoiceResponse()
-    response.say("Please wait sir")
-    response.pause(length=1)
-    response.say("ok gogogogo start talking")
     host = request.url.hostname
     connect = Connect()
     connect.stream(url=f"{NGROK_URL}/media-stream")
@@ -121,13 +127,13 @@ async def send_session_update(openai_ws):
     session_update = {
         "type": "session.update",
         "session": {
-            "turn_detection": {"type": "server_vad"},
+            "turn_detection": {"type": "server_vad", "silence_duration_ms": 300},
             "input_audio_format": "g711_ulaw",
             "output_audio_format": "g711_ulaw",
             "voice": VOICE,
             "instructions": SYSTEM_MESSAGE,
             "modalities": ["text", "audio"],
-            "temperature": 0.8,
+            "temperature": 0.7,
         }
     }
     print('Sending session update:', json.dumps(session_update))
